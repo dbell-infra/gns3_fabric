@@ -1,10 +1,12 @@
 # gns3_fabric
 Build multi-node GNS3 fabrics that offer L2 and L3 VPNs using Ansible
 
-L2VPN Implementation: BGP EVPN
+L2VPN Implementation: VXLAN BGP EVPN
+
 L3VPN Implementation: MPLS L3VPN
 
-#Functionality:
+Functionality
+-------------
 
 The role accomplishes three tasks:
 1. Initial bootstrap that installs FRR, enables MPLS, and reboots the server.
@@ -14,9 +16,11 @@ The role accomplishes three tasks:
 3. Generate FRR config per device and restart FRR service. 
 
 
-The configuration data per device are stored in `roles/fabric/python/configs` 
+The configuration data per device is stored in `roles/fabric/python/configs` 
 
 Example configuration data is provided for a setup with one route reflector and two server nodes
+
+These example configurations build 3 L3VPN tenants and 3 EVPN VXLAN domains
 
 ```
 roles/fabric/python/configs
@@ -37,21 +41,29 @@ roles/fabric/python/configs
 
 The J2 templates used to produce configurations are stored in `roles/fabric/python/templates`
 
-Ansible uses the inventory hostname to locate the correct yaml file per device on playbook execution
+Ansible uses the inventory hostname to locate the correct yaml file per device on playbook execution. Configuration data should follow the naming convention 
+
+`
+<host_name>_<function>.yml
+`
 
 
 Tags can be utilized to run a specific functionality 
 
 installing FRR and MPLS
+
 `ansible-playbook site.yml -t "bootstrap"`
 
 Creating linux networking config and fabric provision service
+
 `ansible-playbook site.yml -t "fabric_provision"`
 
 Installing/Updating FRR configuration
+
 `ansible-playbook site.yml -t "frr"`
 
-##Fabric Architecture
+Fabric Architecture
+-------------------
 
 Route reflector(s) learn EVPN and L3VPN routes from GNS3 server nodes.
 
@@ -59,13 +71,15 @@ GNS3 Server nodes are configured with VRFs and VTEPs to learn BGP routes at L3 a
  
 Devices within the GNS3 topology connect to BGP or VXLAN bridges for inter-host connectivity.
 
-#Fabric Components
+Fabric Components
+-----------------
 
 One or more Ubuntu servers acting as route reflectors
 Two or more GNS3 servers serving as Leaf/PE routers
 
 
-Expected playbook output: 
+Expected playbook output
+-----------------------
 ```
 (venv) you@your-control-node gns3_fabric % ansible-playbook site.yml -t "fabric" -i inventory.yaml 
 
