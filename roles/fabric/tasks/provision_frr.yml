@@ -1,0 +1,57 @@
+---
+- name: create bgpd config
+  local_action: command python roles/fabric/python/build_template.py roles/fabric/python/configs/"{{ inventory_hostname }}"_bgpd.yml roles/fabric/frr/"{{ inventory_hostname }}"_bgpd.conf
+  tags: frr
+
+- name: create ospfd config
+  local_action: command python roles/fabric/python/build_template.py roles/fabric/python/configs/"{{ inventory_hostname }}"_ospfd.yml roles/fabric/frr/"{{ inventory_hostname }}"_ospfd.conf
+  tags: frr
+
+- name: create ldpd config
+  local_action: command python roles/fabric/python/build_template.py roles/fabric/python/configs/"{{ inventory_hostname }}"_ldpd.yml roles/fabric/frr/"{{ inventory_hostname }}"_ldpd.conf
+  tags: frr
+
+- name: add vtysh config
+  ansible.builtin.copy:
+    src: files/vtysh.conf
+    dest: /etc/frr/vtysh.conf
+  become: yes
+  become_method: sudo
+  tags: frr
+
+- name: Remove conf file
+  file:
+    path: /etc/frr/frr.conf
+    state: absent
+  tags: frr
+
+- name: add bgpd config
+  ansible.builtin.copy:
+    src: frr/{{ inventory_hostname }}_bgpd.conf
+    dest: /etc/frr/bgpd.conf
+  become: yes
+  become_method: sudo
+  tags: frr
+
+- name: add ospfd config
+  ansible.builtin.copy:
+    src: frr/{{ inventory_hostname }}_ospfd.conf
+    dest: /etc/frr/ospfd.conf
+  become: yes
+  become_method: sudo
+  tags: frr
+
+- name: add ldpd config
+  ansible.builtin.copy:
+    src: frr/{{ inventory_hostname }}_ldpd.conf
+    dest: /etc/frr/ldpd.conf
+  become: yes
+  become_method: sudo
+  tags: frr
+
+- name: Restart frr service
+  ansible.builtin.service:
+    name: frr
+    state: restarted
+  tags: frr
+

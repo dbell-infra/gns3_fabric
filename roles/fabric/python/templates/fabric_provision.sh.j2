@@ -1,0 +1,35 @@
+#CONFIGURE LOOPBACKS
+{%- for entry in loopbacks %}
+ip link add name {{entry.name}} type dummy
+ip link set {{entry.name}} up
+ip addr add {{entry.ip_addr}} dev loop1
+{%- endfor %}
+
+{%- if l3vpn is defined %}
+#CREATE VRF AND BGP BRIDGE
+{%- for entry in l3vpn %}
+ip link add {{entry.vrf_name}} type vrf table {{entry.table}}
+ip link set dev {{entry.vrf_name}} up
+
+ip link add {{entry.bridge_name}} type bridge
+ip link set {{entry.bridge_name}} master {{entry.vrf_name}}
+ip addr add {{entry.peering_address}} dev {{entry.bridge_name}}
+ip link set {{entry.bridge_name}} up
+#
+{%- endfor %}
+{%- endif %}
+
+
+{%- if vxlan is defined %}
+#
+#CREATE VXLAN SEGMENTS
+#
+{%- for entry in vxlan %}
+ip link add vxlan{{entry.vni_id}} type vxlan id {{entry.vni_id}} dstport 4789 local {{entry.source_address}} nolearning
+brctl addbr br{{entry.vni_id}}
+brctl addif br{{entry.vni_id}}  vxlan{{entry.vni_id}}
+brctl stp br{{entry.vni_id}}  off
+ip link set up dev br{{entry.vni_id}}
+ip link set up dev vxlan{{entry.vni_id}}
+{%- endfor %}
+{%- endif %}

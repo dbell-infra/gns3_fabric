@@ -1,0 +1,79 @@
+---
+  - name: add newer FRR package
+    ansible.builtin.script: scripts/add_frr_package.sh
+    become: yes
+    become_method: sudo
+    tags: bootstrap
+
+  - name: Install FRR
+    package:
+      update_cache: yes
+      name:
+        - frr
+        - python-ipaddress
+        - frr-pythontools
+        - bridge-utils
+      state: latest
+    become: true
+    tags: bootstrap
+
+
+  - name: check daemons
+    become: yes
+    command: grep "# PROVISIONED BY ANSIBLE" /etc/frr/daemons
+    register: UpdatedDaemon
+    check_mode: no
+    ignore_errors: yes
+    changed_when: no
+    tags: bootstrap
+
+  - name: update daemons
+    ansible.builtin.copy:
+      src: files/daemons
+      dest: /etc/frr/daemons
+    become: yes
+    become_method: sudo
+    when: UpdatedDaemon.rc == 1
+    tags: bootstrap
+
+  - name: check modules.conf
+    become: yes
+    command: grep "# PROVISIONED BY ANSIBLE" /etc/modules-load.d/modules.conf
+    register: UpdatedModules
+    check_mode: no
+    ignore_errors: yes
+    changed_when: no
+    tags: bootstrap
+
+  - name: update modules.conf
+    ansible.builtin.copy:
+      src: files/modules.conf
+      dest: /etc/modules-load.d/modules.conf
+    become: yes
+    become_method: sudo
+    when: UpdatedModules.rc == 1
+    tags: bootstrap
+
+
+  - name: check sysctl.conf
+    become: yes
+    command: grep "# PROVISIONED BY ANSIBLE" /etc/sysctl.conf
+    register: UpdatedSysctl
+    check_mode: no
+    ignore_errors: yes
+    changed_when: no
+    tags: bootstrap
+
+  - name: update sysctl.conf
+    ansible.builtin.copy:
+      src: files/sysctl.conf
+      dest: /etc/sysctl.conf
+    become: yes
+    become_method: sudo
+    when: UpdatedSysctl.rc == 1
+    tags: bootstrap
+
+  - name: Reboot hosts
+    reboot:
+    tags: bootstrap
+

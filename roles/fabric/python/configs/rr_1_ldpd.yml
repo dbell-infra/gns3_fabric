@@ -1,0 +1,11 @@
+target_template: templates/ldpd.conf.j2
+router_id: 10.255.255.1
+neighbors:
+  - peer_ip: 10.255.255.2
+    password: gns3
+
+  - peer_ip: 10.255.255.3
+    password: gns3
+
+interfaces:
+  - interface_name: ens33

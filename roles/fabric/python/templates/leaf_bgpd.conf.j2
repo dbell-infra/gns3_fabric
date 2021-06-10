@@ -1,0 +1,49 @@
+frr defaults traditional
+!
+!
+!
+router bgp {{asn}}
+ bgp router-id {{router_id}}
+ neighbor fabric peer-group
+ neighbor fabric remote-as {{asn}}
+ neighbor fabric update-source loop1
+ neighbor fabric capability extended-nexthop
+ {%- for entry in route_reflectors %}
+ neighbor {{entry.peer_ip}} peer-group fabric
+ {%- endfor %}
+ !
+ address-family ipv4 vpn
+  neighbor fabric activate
+  neighbor fabric next-hop-self
+ exit-address-family
+ !
+ address-family l2vpn evpn
+  neighbor fabric activate
+  advertise-all-vni
+ exit-address-family
+!
+ vrf-policy policy
+  exit-vrf-policy
+!
+!
+ vnc defaults
+  exit-vnc
+!
+!
+{% for entry in l3vpn %}
+router bgp {{asn}} vrf {{entry.name}}
+ no bgp ebgp-requires-policy
+ {%- for neighbor in entry.neighbors %}
+ neighbor {{neighbor.peer_ip}} remote-as {{neighbor.peer_ip}}
+ {%- endfor %}
+ !
+ address-family ipv4 unicast
+  redistribute connected
+  label vpn export auto
+  rd vpn export {{entry.rd}}
+  rt vpn both {{entry.rt}}
+  export vpn
+  import vpn
+ exit-address-family
+!
+{%- endfor %}

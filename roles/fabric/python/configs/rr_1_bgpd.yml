@@ -1,0 +1,5 @@
+target_template: templates/spine_bgpd.conf.j2
+asn: 65000
+router_id: 10.255.255.1
+cluster_id: 10.255.255.1
+peer_subnet: 10.255.255.0/24

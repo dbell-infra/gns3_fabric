@@ -1,0 +1,9 @@
+[Unit]
+Description=Provision fabric service.
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /root/fabric_provision.sh
+
+[Install]
+WantedBy=multi-user.target

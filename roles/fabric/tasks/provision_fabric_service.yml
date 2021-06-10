@@ -1,0 +1,36 @@
+---
+- name: create spine fabric config
+  local_action: command python roles/fabric/python/build_template.py roles/fabric/python/configs/"{{ inventory_hostname }}"_fabric_provision.yml roles/fabric/scripts/"{{ inventory_hostname }}_fabric_provision.sh"
+  tags: fabric_service
+
+- name: create systemd service
+  ansible.builtin.copy:
+    src: files/fabric_provision.service
+    dest: /etc/systemd/system/fabric_provision.service
+  become: yes
+  become_method: sudo
+  tags: fabric_service
+
+- name: add fabric_provision config
+  ansible.builtin.copy:
+    src: scripts/{{ inventory_hostname }}_fabric_provision.sh
+    dest: /root/fabric_provision.sh
+  become: yes
+  become_method: sudo
+  tags: fabric_service
+
+- name: update service priveleges
+  become: yes
+  command: chmod 644 /etc/systemd/system/fabric_provision.service
+  tags: fabric_service
+
+- name: enable service
+  become: yes
+  command: systemctl enable fabric_provision.service
+  tags: fabric_service
+
+- name: ensure fabric_provision has started
+  ansible.builtin.service:
+    name: fabric_provision
+    state: restarted
+  tags: fabric_service

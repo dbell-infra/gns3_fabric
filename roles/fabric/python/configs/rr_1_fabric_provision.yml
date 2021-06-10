@@ -1,0 +1,4 @@
+target_template: templates/fabric_provision.sh.j2
+loopbacks:
+  - name: loop1
+    ip_addr: 10.255.255.1/32

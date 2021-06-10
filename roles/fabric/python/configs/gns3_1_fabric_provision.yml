@@ -1,0 +1,30 @@
+target_template: templates/fabric_provision.sh.j2
+loopbacks:
+  - name: loop1
+    ip_addr: 10.255.255.2/32
+
+l3vpn:
+  - vrf_name: INET
+    bridge_name: INET_PEERING
+    peering_address: 172.16.254.1/29
+    table: 1
+
+  - vrf_name: VPN1
+    bridge_name: VPN1_PEERING
+    peering_address: 172.16.254.9/29
+    table: 2
+
+  - vrf_name: VPN2
+    bridge_name: VPN2_PEERING
+    peering_address: 172.16.254.17/29
+    table: 3
+
+vxlan:
+  - vni_id: 100
+    source_address: 10.255.255.2
+
+  - vni_id: 101
+    source_address: 10.255.255.2
+
+  - vni_id: 102
+    source_address: 10.255.255.2

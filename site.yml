@@ -1,0 +1,15 @@
+---
+# file: site.yml
+
+- name: Master Playbook
+  hosts: all
+
+  tasks:
+    - name: Include Fabric Role
+      include_role:
+        name: fabric
+        apply:
+          tags:
+            - fabric
+      tags:
+        - always

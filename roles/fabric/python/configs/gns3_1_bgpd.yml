@@ -1,0 +1,26 @@
+target_template: templates/leaf_bgpd.conf.j2
+asn: 65000
+router_id: 10.255.255.2
+route_reflectors:
+  - peer_ip: 10.255.255.1
+l3vpn:
+  - name: INET
+    neighbors:
+      - peer_ip: 172.16.254.2
+        remote_as: 2000
+    rt: "65000:1"
+    rd: "65000:1"
+
+  - name: VPN1
+    neighbors:
+      - peer_ip: 172.16.254.10
+        remote_as: 2001
+    rt: "65000:2"
+    rd: "65000:2"
+
+  - name: VPN2
+    neighbors:
+      - peer_ip: 172.16.254.18
+        remote_as: 2003
+    rt: "65000:3"
+    rd: "65000:3"

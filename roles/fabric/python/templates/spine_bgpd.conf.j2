@@ -1,0 +1,36 @@
+frr defaults traditional
+!
+hostname spine-01
+log syslog informational
+!
+!
+!
+router bgp {{asn}}
+ bgp router-id {{router_id}}
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ bgp cluster-id {{cluster_id}}
+ neighbor fabric peer-group
+ neighbor fabric remote-as {{asn}}
+ neighbor fabric update-source {{router_id}}
+ neighbor fabric capability extended-nexthop
+ bgp listen range {{peer_subnet}} peer-group fabric
+ !
+ address-family ipv4 vpn
+  neighbor fabric activate
+  neighbor fabric route-reflector-client
+ exit-address-family
+ !
+ address-family l2vpn evpn
+  neighbor fabric activate
+  neighbor fabric route-reflector-client
+ exit-address-family
+!
+!
+ip prefix-list ALLOW_ALL_ROUTES seq 5 permit any
+!
+route-map ALLOW_ALL_ROUTES permit 10
+ match ip address prefix-list ALLOW_ALL_ROUTES
+!
+line vty
+!

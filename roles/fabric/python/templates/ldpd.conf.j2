@@ -1,0 +1,21 @@
+frr defaults traditional
+!
+!
+!
+mpls ldp
+ router-id {{router_id}}
+{%- for entry in neighbors %}
+ neighbor {{entry.peer_ip}} password {{entry.password}}
+{%- endfor %}
+ !
+ address-family ipv4
+
+  discovery transport-address {{router_id}}
+{%- for entry in interfaces %}
+  !
+  interface {{entry.interface_name}}
+  !
+{%- endfor %}
+ exit-address-family
+ !
+!

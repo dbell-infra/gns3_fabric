@@ -1,0 +1,8 @@
+target_template: templates/ospfd.conf.j2
+instance_id: 100
+interfaces:
+  - name: loop1
+    area: 0
+
+  - name: eth1
+    area: 0

@@ -1,0 +1,9 @@
+frr defaults traditional
+!
+!
+!
+router ospf {{instance_id}}
+{%- for entry in interfaces %}
+interface {{entry.name}}
+ ip ospf {{instance_id}} area {{entry.area}}
+{%- endfor %}

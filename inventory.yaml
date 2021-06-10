@@ -1,0 +1,20 @@
+all:
+  children:
+    fabric:
+      hosts:
+        gns3_1:
+        gns3_2:
+        rr_1:
+      vars:
+        ansible_user: ansible
+        ansible_become: yes
+    spine:
+      hosts:
+        rr_1:
+    leaf:
+      hosts:
+        gns3_1:
+        gns3_2:
+      vars:
+        ansible_user: ansible
+        ansible_become: yes

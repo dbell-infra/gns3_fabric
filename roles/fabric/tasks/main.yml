@@ -1,0 +1,11 @@
+---
+# tasks file for fabric
+
+- name: Install FRR and Enable MPLS
+  include: install_frr.yml
+
+- name: Create fabric_provision Service for Linux Networking
+  include: provision_fabric_service.yml
+
+- name: Push FRR Config and Restart FRR
+  include: provision_frr.yml
