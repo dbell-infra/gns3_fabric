@@ -207,3 +207,79 @@ gns3_2                     : ok=22   changed=10   unreachable=0    failed=0    s
 rr_1                       : ok=22   changed=10   unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
 
 ```
+
+Validation
+
+Validate L3VPN routes on route reflector 
+```
+rr_1# sh ip bgp ipv4 vpn 
+BGP table version is 2, local router ID is 10.255.255.1, vrf id 0
+Default local pref 100, local AS 65000
+Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
+               i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+
+   Network          Next Hop            Metric LocPrf Weight Path
+Route Distinguisher: 65000:1
+*>i172.16.254.0/29  10.255.255.2             0    100      0 ?
+    UN=10.255.255.2 EC{65000:1} label=16 type=bgp, subtype=0
+*>i172.16.255.0/29  10.255.255.3             0    100      0 ?
+    UN=10.255.255.3 EC{65000:1} label=16 type=bgp, subtype=0
+Route Distinguisher: 65000:2
+*>i172.16.254.8/29  10.255.255.2             0    100      0 ?
+    UN=10.255.255.2 EC{65000:2} label=17 type=bgp, subtype=0
+*>i172.16.255.8/29  10.255.255.3             0    100      0 ?
+    UN=10.255.255.3 EC{65000:2} label=17 type=bgp, subtype=0
+Route Distinguisher: 65000:3
+*>i172.16.254.16/29 10.255.255.2             0    100      0 ?
+    UN=10.255.255.2 EC{65000:3} label=18 type=bgp, subtype=0
+*>i172.16.255.16/29 10.255.255.3             0    100      0 ?
+    UN=10.255.255.3 EC{65000:3} label=18 type=bgp, subtype=0
+
+Displayed  6 routes and 6 total paths
+rr_1#
+
+```
+
+Validate EVPN routes on route reflector 
+
+```
+rr_1# sh ip bgp l2vpn evpn
+BGP table version is 1, local router ID is 10.255.255.1
+Status codes: s suppressed, d damped, h history, * valid, > best, i - internal
+Origin codes: i - IGP, e - EGP, ? - incomplete
+EVPN type-1 prefix: [1]:[ESI]:[EthTag]:[IPlen]:[VTEP-IP]
+EVPN type-2 prefix: [2]:[EthTag]:[MAClen]:[MAC]:[IPlen]:[IP]
+EVPN type-3 prefix: [3]:[EthTag]:[IPlen]:[OrigIP]
+EVPN type-4 prefix: [4]:[ESI]:[IPlen]:[OrigIP]
+EVPN type-5 prefix: [5]:[EthTag]:[IPlen]:[IP]
+
+   Network          Next Hop            Metric LocPrf Weight Path
+Route Distinguisher: 10.255.255.2:5
+*>i[3]:[0]:[32]:[10.255.255.2]
+                    10.255.255.2                  100      0 i
+                    RT:65000:100 ET:8
+Route Distinguisher: 10.255.255.2:6
+*>i[3]:[0]:[32]:[10.255.255.2]
+                    10.255.255.2                  100      0 i
+                    RT:65000:101 ET:8
+Route Distinguisher: 10.255.255.2:7
+*>i[3]:[0]:[32]:[10.255.255.2]
+                    10.255.255.2                  100      0 i
+                    RT:65000:102 ET:8
+Route Distinguisher: 10.255.255.3:5
+*>i[3]:[0]:[32]:[10.255.255.3]
+                    10.255.255.3                  100      0 i
+                    RT:65000:100 ET:8
+Route Distinguisher: 10.255.255.3:6
+*>i[3]:[0]:[32]:[10.255.255.3]
+                    10.255.255.3                  100      0 i
+                    RT:65000:101 ET:8
+Route Distinguisher: 10.255.255.3:7
+*>i[3]:[0]:[32]:[10.255.255.3]
+                    10.255.255.3                  100      0 i
+                    RT:65000:102 ET:8
+
+Displayed 6 out of 6 total prefixes
+```
