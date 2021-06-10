@@ -206,5 +206,4 @@ gns3_1                     : ok=22   changed=10   unreachable=0    failed=0    s
 gns3_2                     : ok=22   changed=10   unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
 rr_1                       : ok=22   changed=10   unreachable=0    failed=0    skipped=3    rescued=0    ignored=0   
 
-(venv) daltonbell@Daltons-MacBook-Pro gns3_fabric % 
 ```
