@@ -4,7 +4,7 @@ Build multi-node GNS3 fabrics that offer L2 and L3 VPNs using Ansible
 L2VPN Implementation: BGP EVPN
 L3VPN Implementation: MPLS L3VPN
 
-##Functionality:
+#Functionality:
 
 The role accomplishes three tasks:
 1. Initial bootstrap that installs FRR, enables MPLS, and reboots the server.
@@ -59,7 +59,7 @@ GNS3 Server nodes are configured with VRFs and VTEPs to learn BGP routes at L3 a
  
 Devices within the GNS3 topology connect to BGP or VXLAN bridges for inter-host connectivity.
 
-##Fabric Components
+#Fabric Components
 
 One or more Ubuntu servers acting as route reflectors
 Two or more GNS3 servers serving as Leaf/PE routers
